@@ -39,8 +39,6 @@ Fusion::Client.configure do |config|
   config.password = [your password]
 end
 ```
-The 
-
 
 Step 2: Instantiate the client
 
