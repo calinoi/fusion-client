@@ -1,26 +1,32 @@
 require 'fusion/client/version'
 require 'json'
+require 'active_support/all'
+require 'rest-client'
 
 module Fusion
   class Client
-    attr_accessor :username, :password, :url
+    URL = 'https://fusionpro1450.cloudapp.net/FusionProRestService/'
 
-    def self.configure
-      yield self
+    class << self
+      attr_accessor :username, :password
+
+      def configure
+        yield self
+      end
     end
 
-    def initialize(username: nil, password: nil, url: nil)
+    def initialize(username: nil, password: nil)
       Fusion::Client.username ||= username
       Fusion::Client.password ||= password
-      Fusion::Client.url ||= url
     end
 
-    def add_job(template:, data:)
+    def add_job(template:, data:, proof:)
       logon
 
-      path = "addjob?templatename=#{template}&sessionid=#{@session_id}"
+      path = "addjob?templatename=#{template}&sessionid=#{@session_id}&bReturnSingleProof=#{proof}"
       params = data
-      request(:post, params, path)
+      response = request(:post, params, path)
+      response['response']
     end
 
     def cancel_job(job_id:)
@@ -31,7 +37,7 @@ module Fusion
       request(:post, params, path)
     end
 
-    def cancel_job(job_id:)
+    def bypasstimer(job_id:)
       logon
 
       path = 'bypasstimer'
@@ -44,21 +50,18 @@ module Fusion
       raise 'You need to configure Fusion::Client with your username and password.' unless Client.username && Client.password
 
       path ||= default_path
-      url = Fusion::Client.url
-      url += '/' unless url.last == '/'
+      url = URL
       url += path
 
-      case method
-      when :post
-        params = params.is_a?(Hash) ? params.to_json : params
-        RestClient.post(url, params, :content_type => :json, :accept => :json, :timeout => nil) { |response, request, result, &block|
-          handle_response(response, request, result)
-        }
+      if params.is_a?(Hash)
+        params = params.to_json
+        content_type = 'application/json'
       else
-        RestClient::Request.execute(:method => method, :url => url, :headers => {params: params, :accept => :json}, :timeout => nil) { |response, request, result, &block|
-          handle_response(response, request, result)
-        }
+        content_type = 'application/octet-stream'
       end
+      RestClient::Request.execute(:method => method, :url => url, payload: params, :headers => {:accept => :json, content_type: content_type}, :timeout => nil, :verify_ssl => false) { |response, request, result, &block|
+        handle_response(response, request, result)
+      }
     end
 
     def handle_response(response, request, result)
@@ -72,8 +75,8 @@ module Fusion
       when 500
         raise RestClient::InternalServerError, response
       else
-        Rails.logger.debug(response.inspect)
-        Rails.logger.debug(request.inspect)
+        puts response.inspect
+        puts request.inspect
         raise result.to_s
       end
     end
@@ -92,7 +95,7 @@ module Fusion
       end
     end
 
-    private
+    #private
 
     def logon
       return if @session_id.present?
@@ -103,6 +106,8 @@ module Fusion
       @session_id = response['SessionID']
 
       raise response['Message'].inspect unless @session_id.present?
+
+      response
     end
 
   end
