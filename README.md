@@ -24,9 +24,9 @@ Or install it yourself as:
 Step 1: Configure the gem (optional)
 
 `Fusion::Client` requires 3 parameters for initialization: 
-# `url`: The Calinoi url to send requests to.
-# `username`: Your company's username.
-# `password`: Your company's password.
+1. `url`: The Calinoi url to send requests to.
+2. `username`: Your company's username.
+3. `password`: Your company's password.
 
 These 3 parameters can be passed to the initializer when instantiating a
 client or configured using an initializer (recommended). 
@@ -39,8 +39,6 @@ Fusion::Client.configure do |config|
   config.password = [your password]
 end
 ```
-The 
-
 
 Step 2: Instantiate the client
 
