@@ -21,38 +21,7 @@ Or install it yourself as:
 
 ## Usage
 
-Step 1: Configure the gem (optional)
-
-`Fusion::Client` requires 3 parameters for initialization: 
-1. `url`: The Calinoi url to send requests to.
-2. `username`: Your company's username.
-3. `password`: Your company's password.
-
-These 3 parameters can be passed to the initializer when instantiating a
-client or configured using an initializer (recommended). 
-
-Sample Initializer: `config/initializers/fusion_client.rb`
-```ruby
-Fusion::Client.configure do |config|
-  config.url = [URL]
-  config.username = [your username]
-  config.password = [your password]
-end
-```
-
-Step 2: Instantiate the client
-
-Instantiating the client is pretty straightforward:
-```ruby
-client = Fusion::Client.new
-```
-or if you didn't use an initializer you will need to pass those
-configuration values in here:
-```ruby
-client = Fusion::Client.new(username: [your username], password: [your
-password], url: [URL])
-```
-
+[See the Usage page on the wiki](https://github.com/calinoi/fusion-client/wiki/Usage)
 
 ## Development
 
@@ -68,4 +37,5 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/calino
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
 

@@ -37,7 +37,7 @@ module Fusion
       request(:post, params, path)
     end
 
-    def bypasstimer(job_id:)
+    def bypass_timer(job_id:)
       logon
 
       path = 'bypasstimer'
