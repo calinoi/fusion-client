@@ -25,8 +25,7 @@ module Fusion
 
       path = "addjob?templatename=#{template}&sessionid=#{@session_id}&bReturnSingleProof=#{proof}"
       params = data
-      response = request(:post, params, path)
-      response['response']
+      request(:post, params, path)
     end
 
     def cancel_job(job_id:)
